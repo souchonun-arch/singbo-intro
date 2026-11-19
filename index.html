@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>星博補習社 · 三端整合系統介紹</title>
+<meta name="description" content="星博補習社三端整合系統：中心端、導師端、家長端共用同一份資料。功能與亮點介紹。">
+<meta name="theme-color" content="#4f46e5">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="星博補習社">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="星博補習社 · 三端整合系統介紹">
+<meta property="og:description" content="中心端、導師端、家長端共用同一份資料：排課點名、學費繳費、成績報告、家長通知，一套系統完成。">
+<meta property="og:url" content="https://souchonun-arch.github.io/singbo-intro/">
+<meta property="og:image" content="https://souchonun-arch.github.io/singbo-intro/icons/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icons/app-favicon-32.png">
+<link rel="apple-touch-icon" href="icons/app-192.png">
+<style>
+*{box-sizing:border-box}
+:root{
+  --ink:#1e1b4b; --ink2:#3730a3; --brand:#4f46e5; --brand2:#7c6cf6;
+  --soft:#eef2ff; --line:#e4e6f0; --muted:#5b6180; --muted2:#767ca0;
+  --bg:#f6f7fb; --card:#fff;
+  --ok:#047857; --warn:#b45309; --bad:#b91c1c;
+  --gold:#d99a2b; --sky:#2f9ed1; --coral:#e0703c;
+  --r:16px; --max:1080px;
+  --shadow:0 1px 2px rgba(30,27,75,.05), 0 10px 30px rgba(30,27,75,.06);
+  --shadow-lg:0 18px 50px rgba(30,27,75,.14), 0 2px 8px rgba(30,27,75,.06);
+}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--card); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Hiragino Sans CNS","Microsoft JhengHei","Noto Sans TC",sans-serif;
+  line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+a{color:inherit; text-decoration:none}
+h1,h2,h3,h4{margin:0; line-height:1.3; letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:12.5px; font-weight:700; letter-spacing:.14em;
+  color:var(--brand); text-transform:uppercase;
+}
+.eyebrow::before{content:""; width:18px; height:2px; background:var(--brand); border-radius:2px}
+.lead{color:var(--muted); font-size:15.5px}
+
+/* ── 頂欄 ───────────────────────────────── */
+.top{
+  position:sticky; top:0; z-index:50; background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(14px); border-bottom:1px solid var(--line);
+}
+.top .wrap{display:flex; align-items:center; gap:16px; height:60px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.02em}
+.brand img{width:26px; height:26px; border-radius:7px}
+.top nav{margin-left:auto; display:flex; gap:22px; font-size:13.5px; color:var(--muted)}
+.top nav a:hover{color:var(--brand)}
+@media(max-width:720px){.top nav{display:none}}
+
+/* ── 首屏 ───────────────────────────────── */
+.hero{
+  position:relative; overflow:hidden; color:#fff;
+  background:radial-gradient(900px 500px at 78% -10%, #3b2f7a 0%, #1e1b4b 46%, #120f2e 100%);
+  padding:78px 0 92px;
+}
+.hero::after{
+  content:""; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:52px 52px;
+  mask-image:radial-gradient(70% 60% at 50% 20%, #000 0%, transparent 100%);
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 20%, #000 0%, transparent 100%);
+  pointer-events:none;
+}
+.hero .wrap{position:relative; z-index:1; text-align:center}
+.hero h1{font-size:clamp(30px,5.2vw,50px); font-weight:800; margin:18px 0 0; letter-spacing:-.025em}
+.hero h1 em{font-style:normal; color:#f3d08a}
+.hero .sub{color:#c9c7e6; font-size:16.5px; max-width:660px; margin:18px auto 0}
+.hero .badge{
+  display:inline-flex; align-items:center; gap:9px; padding:7px 15px 7px 9px;
+  border:1px solid rgba(255,255,255,.18); border-radius:999px;
+  background:rgba(255,255,255,.06); font-size:12.5px; color:#dedcf4;
+}
+.hero .badge img{width:22px; height:22px; border-radius:6px}
+.ends{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:760px; margin:40px auto 0}
+@media(max-width:640px){.ends{grid-template-columns:1fr}}
+.end-chip{
+  display:flex; align-items:center; gap:12px; text-align:left;
+  padding:14px 16px; border-radius:14px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+}
+.end-chip img{width:38px; height:38px; border-radius:10px; flex:none}
+.end-chip.gold{border-color:rgba(217,154,43,.42); background:rgba(217,154,43,.09)}
+.end-chip.gold img{box-shadow:0 0 0 2px rgba(217,154,43,.55)}
+.end-chip.sky{border-color:rgba(47,158,209,.42); background:rgba(47,158,209,.09)}
+.end-chip.sky img{box-shadow:0 0 0 2px rgba(47,158,209,.55)}
+.end-chip.coral{border-color:rgba(224,112,60,.42); background:rgba(224,112,60,.09)}
+.end-chip.coral img{box-shadow:0 0 0 2px rgba(224,112,60,.55)}
+.end-chip b::after{
+  content:""; display:inline-block; width:6px; height:6px; border-radius:50%;
+  margin-left:7px; vertical-align:2px; background:currentColor; opacity:.85;
+}
+.end-chip.gold b::after{background:#e2b055}
+.end-chip.sky b::after{background:#54b9e4}
+.end-chip.coral b::after{background:#ee8b5a}
+.end-chip b{display:block; font-size:14.5px; letter-spacing:.01em}
+.end-chip span{display:block; font-size:12px; color:#b9b6d8; line-height:1.5}
+
+/* ── 通用區塊 ───────────────────────────── */
+section{padding:80px 0}
+section.tint{background:var(--bg); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.shead{max-width:660px; margin-bottom:44px}
+.shead h2{font-size:clamp(24px,3.4vw,33px); font-weight:800; margin:12px 0 12px}
+.shead p{color:var(--muted); font-size:15.5px}
+
+/* ── 問題 → 解法 ───────────────────────── */
+.pain{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+@media(max-width:760px){.pain{grid-template-columns:1fr}}
+.pain .card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:22px; box-shadow:var(--shadow);
+}
+.pain .card h4{font-size:14.5px; color:var(--muted); font-weight:700; letter-spacing:.02em}
+.pain .card .bad{margin:10px 0 14px; color:var(--ink); font-weight:700; font-size:15px}
+.pain .card hr{border:0; border-top:1px dashed var(--line); margin:0 0 14px}
+.pain .card .good{color:var(--ink2); font-size:13.8px; line-height:1.75}
+.pain .card .good i{font-style:normal; color:var(--ok); font-weight:700}
+
+/* ── 流程 ───────────────────────────────── */
+.flow{display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:8px}
+@media(max-width:860px){.flow{grid-template-columns:1fr 1fr; row-gap:34px}}
+.step{position:relative; padding:0 20px 0 0}
+.step .n{
+  width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  background:var(--soft); color:var(--brand); font-weight:800; font-size:14px;
+  border:1px solid #d9dffb; margin-bottom:14px;
+}
+.step h4{font-size:15px; margin-bottom:6px}
+.step p{font-size:13.5px; color:var(--muted); line-height:1.7}
+.step::after{
+  content:""; position:absolute; top:17px; left:44px; right:6px; height:1px;
+  background:linear-gradient(90deg, #c9cef0, transparent);
+}
+.step:last-child::after{display:none}
+@media(max-width:860px){.step::after{display:none}}
+
+/* ── 三端主體 ───────────────────────────── */
+.ends-sec{padding:84px 0}
+.ends-sec + .ends-sec{border-top:1px solid var(--line)}
+.ends-sec .grid{display:grid; grid-template-columns:1fr 1.02fr; gap:52px; align-items:center}
+.ends-sec.flip .grid{grid-template-columns:1.02fr 1fr}
+.ends-sec.flip .copy{order:2}
+/* 手機：一律單欄，且 .flip 的方向要一併還原（否則會被上面的規則壓成兩欄） */
+@media(max-width:900px){
+  .ends-sec .grid,
+  .ends-sec.flip .grid{grid-template-columns:1fr; gap:34px}
+  .ends-sec.flip .copy{order:0}
+}
+
+.tag{
+  display:inline-flex; align-items:center; gap:9px; padding:6px 13px 6px 7px;
+  border-radius:999px; font-size:12.5px; font-weight:700;
+  background:var(--soft); color:var(--ink2); border:1px solid #dce2fb;
+}
+.tag img{width:22px; height:22px; border-radius:6px}
+.tag.t-gold{background:#fdf6e7; border-color:#f2e2bd; color:#8a5f10}
+.tag.t-sky{background:#eaf7fd; border-color:#c7e8f6; color:#1d6a8d}
+.tag.t-coral{background:#fdf1ea; border-color:#f6dccd; color:#96431c}
+
+.ends-sec h2{font-size:clamp(25px,3.6vw,36px); font-weight:800; margin:16px 0 12px}
+.ends-sec .desc{color:var(--muted); font-size:15.5px; margin-bottom:22px}
+
+.feat{display:grid; gap:13px; margin:0 0 26px; padding:0; list-style:none}
+.feat li{display:flex; gap:12px; align-items:flex-start}
+.feat .ic{
+  width:28px; height:28px; flex:none; border-radius:8px; display:grid; place-items:center;
+  background:var(--soft); color:var(--brand); margin-top:2px;
+}
+.feat .ic svg{width:15px; height:15px}
+.feat b{display:block; font-size:14.2px; letter-spacing:.01em}
+.feat span{display:block; font-size:13.4px; color:var(--muted); line-height:1.65}
+
+.tabs-label{font-size:11.5px; font-weight:700; letter-spacing:.12em; color:var(--muted2); margin-bottom:9px}
+.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chips span{
+  font-size:12.4px; padding:5px 11px; border-radius:8px; color:var(--ink2);
+  background:#f2f4fd; border:1px solid #e2e6f8;
+}
+.chips span.hi{background:var(--brand); border-color:var(--brand); color:#fff}
+
+/* ── 裝置外框 ───────────────────────────── */
+.device{position:relative}
+.browser{
+  background:#fff; border:1px solid var(--line); border-radius:12px;
+  box-shadow:var(--shadow-lg); overflow:hidden;
+}
+.browser .bar{
+  display:flex; align-items:center; gap:6px; padding:9px 12px;
+  background:#f7f8fc; border-bottom:1px solid var(--line);
+}
+.dot{width:8px; height:8px; border-radius:50%}
+.dot.r{background:#f0a39b} .dot.y{background:#f2d08a} .dot.g{background:#a4d9b4}
+.url{
+  margin-left:8px; flex:1; font-size:10.5px; color:var(--muted2);
+  background:#fff; border:1px solid var(--line); border-radius:6px; padding:2px 8px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; white-space:nowrap; overflow:hidden;
+}
+.mock{display:grid; grid-template-columns:112px 1fr; font-size:11px; line-height:1.45}
+.mock .side{background:#161335; padding:10px 8px; color:#c9c7e6}
+.mock .side .lg{display:flex; align-items:center; gap:6px; font-size:9.5px; font-weight:700; color:#fff; padding:0 4px 10px}
+.mock .side .lg img{width:14px; height:14px; border-radius:4px}
+.mock .side .grp{font-size:8px; letter-spacing:.1em; color:#8b87b4; padding:7px 6px 3px}
+.mi{
+  display:flex; align-items:center; gap:6px; padding:3.5px 7px; border-radius:5px;
+  font-size:9.5px; color:#b9b6d8; white-space:nowrap;
+}
+.mi .g{font-size:8px; opacity:.8; width:9px}
+.mi.on{background:rgba(255,255,255,.14); color:#fff; font-weight:600}
+.mock .main{padding:12px 14px 14px; background:#fff}
+.mh{font-size:12px; font-weight:800; color:var(--ink); margin-bottom:2px}
+.msub{font-size:9.5px; color:var(--muted2); margin-bottom:10px}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:11px}
+.st{background:#f8f9fd; border:1px solid #eceef7; border-radius:7px; padding:7px 8px}
+.st b{display:block; font-size:15px; color:var(--ink); letter-spacing:-.02em}
+.st span{display:block; font-size:8px; color:var(--muted2); margin-top:1px; white-space:nowrap; overflow:hidden}
+.st.good b{color:var(--ok)} .st.warn b{color:var(--warn)} .st.acc b{color:var(--brand)}
+.panel{border:1px solid #eceef7; border-radius:8px; overflow:hidden}
+.panel .ph{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:7px 9px; background:#fafbfe; border-bottom:1px solid #eceef7;
+  font-size:9.5px; font-weight:700; color:var(--ink);
+}
+.pill{font-size:7.5px; font-weight:700; padding:1.5px 5px; border-radius:99px}
+.pill.ok{background:#ecfdf5; color:#047857}
+.pill.warn{background:#fffbeb; color:#b45309}
+.pill.bad{background:#fef2f2; color:#b91c1c}
+.pill.info{background:#eff6ff; color:#1d4ed8}
+.tr{display:grid; grid-template-columns:1.5fr .9fr .8fr .7fr; gap:6px; padding:5px 9px; font-size:9px; color:var(--muted); border-bottom:1px solid #f4f5fa}
+.tr:last-child{border-bottom:0}
+.tr.hd{color:var(--muted2); font-size:8px; letter-spacing:.04em; background:#fcfcff}
+.tr b{color:var(--ink); font-weight:600}
+.bar-line{margin:0 9px 8px}
+.bar-line .lb{display:flex; justify-content:space-between; font-size:8.5px; color:var(--muted); margin-bottom:3px}
+.track{height:6px; background:#eef0f8; border-radius:99px; overflow:hidden}
+.fill{height:100%; border-radius:99px; background:linear-gradient(90deg,#6d63f0,#9a8df8)}
+
+/* 手機 */
+.phone{
+  width:274px; margin:0 auto; background:#12102b; border-radius:34px; padding:9px;
+  box-shadow:var(--shadow-lg); position:relative;
+}
+.phone .screen{background:#f6f7fb; border-radius:26px; overflow:hidden; position:relative}
+.phone .status{display:flex; justify-content:space-between; padding:6px 14px 2px; font-size:8.5px; color:#6b6f92; background:#fff}
+.notch{
+  position:absolute; top:8px; left:50%; transform:translateX(-50%);
+  width:52px; height:5px; border-radius:99px; background:#2b2850; z-index:2;
+}
+.p-top{
+  background:linear-gradient(120deg,#3b2f7a,#1e1b4b); color:#fff; padding:10px 13px 14px;
+}
+.p-top .who{font-size:8.5px; color:#c4c1e2}
+.p-top .nm{font-size:13.5px; font-weight:800; margin-top:1px}
+.p-top .sel{
+  margin-top:8px; display:flex; gap:5px;
+}
+.p-top .sel em{
+  font-style:normal; font-size:8px; padding:2.5px 7px; border-radius:99px;
+  background:rgba(255,255,255,.14); color:#e8e6fb;
+}
+.p-top .sel em.on{background:#fff; color:#1e1b4b; font-weight:700}
+.p-body{padding:9px 11px 58px}
+.p-card{background:#fff; border:1px solid #eceef7; border-radius:11px; padding:9px 10px; margin-bottom:8px}
+.p-card h5{margin:0 0 6px; font-size:9.5px; font-weight:800; color:var(--ink); display:flex; justify-content:space-between; align-items:center}
+.kv{display:flex; justify-content:space-between; font-size:8.8px; color:var(--muted); padding:2.5px 0}
+.kv b{color:var(--ink); font-weight:600}
+.big-num{font-size:19px; font-weight:800; color:var(--brand); letter-spacing:-.02em}
+.note-row{display:flex; gap:6px; font-size:8.8px; color:var(--muted); padding:4px 0; border-bottom:1px solid #f4f5fa}
+.note-row:last-child{border-bottom:0}
+.note-row i{width:5px; height:5px; border-radius:50%; background:var(--brand); margin-top:5px; flex:none}
+.p-nav{
+  position:absolute; bottom:0; left:0; right:0; display:grid; grid-template-columns:repeat(5,1fr);
+  background:rgba(255,255,255,.97); border-top:1px solid #e6e8f2; padding:5px 2px 7px;
+}
+.p-nav div{text-align:center; font-size:7.5px; color:#9aa0bd}
+.p-nav div.on{color:var(--brand); font-weight:700}
+.p-nav em{display:block; font-style:normal; font-size:10px; margin-bottom:1px}
+
+/* 窄螢幕：示意圖讓出空間，寧願簡化也不要擠成一團 */
+@media(max-width:560px){
+  .mock{grid-template-columns:92px 1fr; font-size:10px}
+  .mock .side{padding:9px 5px}
+  .mock .side .lg{font-size:8.5px; padding:0 2px 8px}
+  .mi{font-size:8.6px; padding:3px 5px; gap:4px}
+  .mi .g{display:none}
+  .mock .main{padding:10px 10px 12px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .st b{font-size:14px}
+  .tr{font-size:8.2px; padding:4px 6px; gap:4px}
+  .panel .ph{font-size:8.6px; padding:6px 7px}
+  .phone{width:262px}
+}
+
+/* ── 矩陣 ───────────────────────────────── */.matrix{width:100%; border-collapse:separate; border-spacing:0; font-size:14px}
+.matrix th,.matrix td{padding:12px 14px; text-align:center; border-bottom:1px solid var(--line)}
+.matrix thead th{
+  font-size:12px; letter-spacing:.06em; color:var(--muted); font-weight:700;
+  background:#fafbfe; border-top:1px solid var(--line);
+}
+.matrix thead th:first-child{border-radius:12px 0 0 0; text-align:left}
+.matrix thead th:last-child{border-radius:0 12px 0 0}
+.matrix tbody th{text-align:left; font-weight:600; font-size:13.6px; color:var(--ink)}
+.matrix td{color:var(--brand); font-size:15px}
+.matrix td.no{color:#c7cbdd}
+.matrix td.pt{color:var(--muted2); font-size:12.5px}
+.matrix .cap{display:block; font-size:11.5px; color:var(--muted2); font-weight:400; margin-top:2px}
+.mwrap{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card); box-shadow:var(--shadow)}
+.legend{display:flex; gap:18px; font-size:12.5px; color:var(--muted); margin-top:14px; flex-wrap:wrap}
+@media(max-width:560px){
+  .matrix th,.matrix td{padding:9px 5px}
+  .matrix thead th{font-size:10.5px; white-space:nowrap}
+  .matrix tbody th{font-size:12px; line-height:1.5}
+  .matrix td{font-size:12.5px}
+  .matrix .cap{font-size:10px; line-height:1.45}
+  .legend{font-size:11.5px; gap:10px}
+}
+
+/* ── 亮點卡 ─────────────────────────────── */
+.hi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+@media(max-width:860px){.hi-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.hi-grid{grid-template-columns:1fr}}
+.hi{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+  padding:22px; box-shadow:var(--shadow);
+}
+.hi .ic{
+  width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
+  background:linear-gradient(140deg,#eef2ff,#e3e8ff); color:var(--brand); margin-bottom:14px;
+}
+.hi .ic svg{width:18px; height:18px}
+.hi h4{font-size:15px; margin-bottom:7px}
+.hi p{font-size:13.5px; color:var(--muted); line-height:1.7}
+
+/* ── 安全 ───────────────────────────────── */
+.safe{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media(max-width:760px){.safe{grid-template-columns:1fr}}
+.safe .item{
+  display:flex; gap:13px; padding:18px; background:var(--card);
+  border:1px solid var(--line); border-radius:14px;
+}
+.safe .item .k{
+  font-size:11px; font-weight:800; letter-spacing:.08em; color:var(--brand);
+  flex:none; width:34px; height:34px; border-radius:9px; display:grid; place-items:center;
+  background:var(--soft);
+}
+.safe b{display:block; font-size:14px; margin-bottom:4px}
+.safe span{display:block; font-size:13.2px; color:var(--muted); line-height:1.68}
+
+/* ── CTA ────────────────────────────────── */
+.cta{
+  margin:0 24px 72px; border-radius:24px; padding:56px 32px; text-align:center; color:#fff;
+  background:radial-gradient(700px 320px at 50% 0%, #40347f 0%, #1e1b4b 55%, #14112f 100%);
+}
+.cta h2{font-size:clamp(23px,3.4vw,31px); font-weight:800; margin-bottom:12px}
+.cta p{color:#c2bfe0; font-size:14.5px; max-width:520px; margin:0 auto 24px}
+.cta .btn{
+  display:inline-block; padding:13px 26px; border-radius:12px; font-weight:800; font-size:14.5px;
+  background:#fff; color:var(--ink); box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.cta .code{margin-top:16px; font-size:12px; color:#a8a4cc; letter-spacing:.04em}
+.cta .code code{
+  font-family:ui-monospace,Menlo,monospace; background:rgba(255,255,255,.1);
+  padding:2px 7px; border-radius:5px; color:#e6e3ff;
+}
+footer{padding:34px 0 46px; text-align:center; font-size:12.5px; color:var(--muted2); border-top:1px solid var(--line)}
+footer p + p{margin-top:6px}
+
+/* ── 列印（橫向 A4；示意圖不跨頁，其餘自然流動）── */
+@page{size:A4 landscape; margin:10mm}
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .top,.cta .btn{display:none}
+  body{font-size:9.5pt; line-height:1.55}
+  .wrap{max-width:1010px; padding:0}
+  section{padding:16px 0}
+  .hero{padding:18px 0 22px}
+  .ends-sec{padding:18px 0}
+  .shead{margin-bottom:18px}
+  .shead h2{font-size:19pt}
+  .browser,.phone,.mwrap,.pain,.hi-grid,.safe,.flow,.cta{break-inside:avoid}
+  .cta{margin:0; padding:22px 24px; border-radius:14px}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <div class="brand"><img src="icons/app-192.png" alt="">星博補習社</div>
+    <nav>
+      <a href="#why">為甚麼</a>
+      <a href="#flow">如何運作</a>
+      <a href="#admin">中心端</a>
+      <a href="#teacher">導師端</a>
+      <a href="#parent">家長端</a>
+      <a href="#matrix">能力對照</a>
+      <a href="#safe">安全</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge"><img src="icons/app-192.png" alt="">一個網址 · 三種身份 · 同一本帳</div>
+    <h1>一個系統，<em>三端各司其職</em></h1>
+    <p class="sub">
+      中心端管營運、導師端管教學、家長端管知情。三端不是三個網站，而是同一份資料的三種視角——
+      前台點一次名，導師與家長同一刻就看到。
+    </p>
+
+    <div class="ends">
+      <div class="end-chip gold">
+        <img src="icons/app-192.png" alt="">
+        <div><b>中心端</b><span>校長、主任、櫃檯<br>34 個功能頁</span></div>
+      </div>
+      <div class="end-chip sky">
+        <img src="icons/teacher-192.png" alt="">
+        <div><b>導師端</b><span>全體導師<br>職級決定可見範圍</span></div>
+      </div>
+      <div class="end-chip coral">
+        <img src="icons/parent-192.png" alt="">
+        <div><b>家長端</b><span>在家長手機上<br>子女狀況隨時可查</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 問題與解法 -->
+<section id="why">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">為甚麼要整合</div>
+      <h2>補習社的日常，本來就是三批人在做同一件事</h2>
+      <p>同一筆出席紀錄，櫃檯要抄一次、導師要問一次、家長要再問一次。三端整合做的事，是讓這件事只發生一次。</p>
+    </div>
+
+    <div class="pain">
+      <div class="card">
+        <h4>出席與課堂</h4>
+        <div class="bad">以前：紙本點名 + 群組問「今日有無返？」</div>
+        <hr>
+        <div class="good"><i>現在：</i>前台按一下簽到，導師端今日到校情況、家長端「今日到校情況」同步更新，不用任何人回覆訊息。</div>
+      </div>
+      <div class="card">
+        <h4>功課與成績</h4>
+        <div class="bad">以前：導師寫在手冊，家長靠子女轉述</div>
+        <hr>
+        <div class="good"><i>現在：</i>導師在教務頁填一次，家長端「課堂」頁當晚看得到功課、成績與課堂時間表。</div>
+      </div>
+      <div class="card">
+        <h4>請假與收費</h4>
+        <div class="bad">以前：家長打電話，櫃檯寫在紙上再逐個通知</div>
+        <hr>
+        <div class="good"><i>現在：</i>家長在家長端提交申請，導師端「家長提交」列為待處理，主任批核後全程留紀錄。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 流程 -->
+<section id="flow" class="tint">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">如何運作</div>
+      <h2>一筆資料，走完四個環節</h2>
+      <p>每個環節只由一個角色負責填寫，其餘兩端只讀。責任清楚，就不會出現兩個版本。</p>
+    </div>
+
+    <div class="flow">
+      <div class="step">
+        <div class="n">1</div>
+        <h4>前台寫入</h4>
+        <p>櫃檯為學生簽到、簽走，登記停課留校，開月費帳單與收據。</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4>導師補上教務</h4>
+        <p>導師填當日功課、成績，核對班別出席，處理家長提交。</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4>家長即時可見</h4>
+        <p>家長在自己手機看到子女今日到校、功課、出席、帳單與通知。</p>
+      </div>
+      <div class="step">
+        <div class="n">4</div>
+        <h4>管理層看趨勢</h4>
+        <p>營運看板、續報與留存、退費審批、報表匯出，全部由此而來。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 中心端 -->
+<section id="admin" class="ends-sec">
+  <div class="wrap">
+    <div class="grid">
+      <div class="copy">
+        <div class="tag t-gold"><img src="icons/app-192.png" alt="">中心端 · 員工系統</div>
+        <h2>整個中心，一個畫面看完</h2>
+        <p class="desc">
+          34 個功能頁分成六大組：前台日常、經營管理、學生與收費、教務、行政，以及員工自己的「我的工作」。
+          按角色（校長／主任／導師／櫃檯）自動顯示有權限的項目，看不到的不會出現。
+        </p>
+
+        <ul class="feat">
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5m0 14h16"/><path d="M8 15V9m4 6V6m4 9v-4"/></svg></span>
+            <div><b>營運看板一眼看現況</b><span>在讀學生、今日到校、待簽走、停課留校、本月學費、續報率，六個數字就是一日開場。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg></span>
+            <div><b>前台點名，一個按鈕完成</b><span>簽到、簽走、放學接送人一併記錄；停課日另有留校照顧名單。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></span>
+            <div><b>排課會自己抓衝突</b><span>同一導師、同一課室撞時間會即時標示，不用等開課才發現。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 8h5M9.5 12h5"/></svg></span>
+            <div><b>收費與收據成一套</b><span>月費帳單、按堂報名、雜費收據、收據查詢互相對得上，欠費一眼可尋。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg></span>
+            <div><b>經營有自己的儀表</b><span>招生漏斗（試堂→查詢→報名）、續報與留存、家長滿意度問卷、退費審批。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.4"/><path d="M3 20c0-3.3 2.7-5.4 6-5.4s6 2.1 6 5.4"/><path d="M18 8v5M15.5 10.5h5"/></svg></span>
+            <div><b>家長帳號由中心派發</b><span>開戶、重設密碼、綁定子女，全部在「家長帳號」頁處理，不必家長自行註冊。</span></div>
+          </li>
+        </ul>
+
+        <div class="tabs-label">六大功能分組</div>
+        <div class="chips">
+          <span class="hi">我的工作</span><span class="hi">前台日常</span><span class="hi">經營管理</span>
+          <span class="hi">學生與收費</span><span class="hi">教務</span><span class="hi">行政</span>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="browser">
+          <div class="bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="url">singbo-tutor.app.workbuddy.host/?sharecode=…</span>
+          </div>
+          <div class="mock">
+            <div class="side">
+              <div class="lg"><img src="icons/app-192.png" alt="">星博 · 員工</div>
+              <div class="grp">前台日常</div>
+              <div class="mi on"><span class="g">◈</span>營運看板</div>
+              <div class="mi"><span class="g">✓</span>前台點名</div>
+              <div class="mi"><span class="g">▤</span>出席紀錄</div>
+              <div class="mi"><span class="g">☂</span>停課安排</div>
+              <div class="grp">經營管理</div>
+              <div class="mi"><span class="g">◔</span>招生漏斗</div>
+              <div class="mi"><span class="g">◑</span>續報與留存</div>
+              <div class="mi"><span class="g">⊘</span>退費審批</div>
+              <div class="mi"><span class="g">✉</span>家長訊息</div>
+              <div class="grp">學生與收費</div>
+              <div class="mi"><span class="g">☺</span>學生資料庫</div>
+              <div class="mi"><span class="g">$</span>月費帳單</div>
+              <div class="grp">行政</div>
+              <div class="mi"><span class="g">⇩</span>報表匯出</div>
+            </div>
+            <div class="main">
+              <div class="mh">營運看板</div>
+              <div class="msub">星博總校 · 今日</div>
+              <div class="stats">
+                <div class="st acc"><b>128</b><span>在讀學生</span></div>
+                <div class="st good"><b>96</b><span>今日到校</span></div>
+                <div class="st warn"><b>7</b><span>待簽走</span></div>
+                <div class="st"><b>0</b><span>停課留校</span></div>
+              </div>
+              <div class="panel">
+                <div class="ph"><span>今日出席 · 逐班</span><span class="pill info">即時</span></div>
+                <div class="tr hd"><span>班別</span><span>導師</span><span>出席</span><span>狀態</span></div>
+                <div class="tr"><b>小四數學 A</b><span>陳老師</span><span>12 / 12</span><span class="pill ok">齊</span></div>
+                <div class="tr"><b>小六英文 B</b><span>李老師</span><span>9 / 10</span><span class="pill warn">1 請假</span></div>
+                <div class="tr"><b>小三中文 A</b><span>黃老師</span><span>8 / 8</span><span class="pill ok">齊</span></div>
+                <div class="tr"><b>初一數學</b><span>蘇老師</span><span>6 / 7</span><span class="pill warn">未到</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 導師端 -->
+<section id="teacher" class="ends-sec flip">
+  <div class="wrap">
+    <div class="grid">
+      <div class="copy">
+        <div class="tag t-sky"><img src="icons/teacher-192.png" alt="">導師端 · 教學現場</div>
+        <h2>只給導師看他要看的那一頁</h2>
+        <p class="desc">
+          五個頁籤：今日、我的表現、排程、教務、家長提交。用職級（T1 至 T5）自動收窄範圍——
+          新入職的導師不會被一堆批核按鈕淹沒，資深導師則拿到全中心摘要。
+        </p>
+
+        <ul class="feat">
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
+            <div><b>今日頁＝一日工作的起點</b><span>今日我的課堂、今日到校情況、待處理家長提交，三塊看完就知要做甚麼。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.6 5.6L21 9.4l-4.5 4.3 1.1 6.1L12 17l-5.6 2.8 1.1-6.1L3 9.4l6.4-.8z"/></svg></span>
+            <div><b>表現用數字說話</b><span>本月目標達成率、已完成堂數、打卡工時、服務學生、準時率、功課完成率，全部自動計算。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></span>
+            <div><b>職級決定看得到幾多</b><span>T2 起可看個人表現；T3 起可批核家長提交；T4 起可看全中心教務摘要並帶班。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H7l-3 3z"/></svg></span>
+            <div><b>家長提交不用再靠電話</b><span>請假、查詢集中在一頁，處理過的另有「最近已處理」可追溯。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div><b>上班更表與薪金自己查</b><span>班次、打卡紀錄、本月薪金明細，不必每月問主任。</span></div>
+          </li>
+        </ul>
+
+        <div class="tabs-label">五個頁籤</div>
+        <div class="chips">
+          <span class="hi">今日</span><span>我的表現</span><span>排程</span><span>教務</span><span>家長提交</span>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="browser">
+          <div class="bar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="url">…/teacher/?sharecode=…</span>
+          </div>
+          <div class="mock">
+            <div class="side">
+              <div class="lg"><img src="icons/teacher-192.png" alt="">星博 · 導師</div>
+              <div class="grp">我的</div>
+              <div class="mi on"><span class="g">◈</span>今日</div>
+              <div class="mi"><span class="g">★</span>我的表現</div>
+              <div class="mi"><span class="g">▦</span>排程</div>
+              <div class="mi"><span class="g">✎</span>教務</div>
+              <div class="mi"><span class="g">◷</span>家長提交</div>
+              <div class="grp">職級</div>
+              <div class="mi"><span class="g">◑</span>T3 中級導師</div>
+              <div class="mi"><span class="g">✓</span>批核：已開放</div>
+            </div>
+            <div class="main">
+              <div class="mh">今日</div>
+              <div class="msub">陳老師 · 8 月 14 日（五）</div>
+              <div class="stats">
+                <div class="st good"><b>3</b><span>今日課堂</span></div>
+                <div class="st"><b>12</b><span>已到校</span></div>
+                <div class="st warn"><b>0</b><span>未點名</span></div>
+                <div class="st acc"><b>2</b><span>待處理</span></div>
+              </div>
+              <div class="panel" style="margin-bottom:8px">
+                <div class="ph"><span>功課完成率</span><span class="pill ok">86%</span></div>
+                <div class="bar-line" style="padding-top:7px">
+                  <div class="lb"><span>已核對 26 / 30 份</span><span>本月</span></div>
+                  <div class="track"><div class="fill" style="width:86%"></div></div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="ph"><span>今日我的課堂</span><span class="pill info">3 節</span></div>
+                <div class="tr hd"><span>時間</span><span>班別</span><span>內容</span><span>狀態</span></div>
+                <div class="tr"><b>16:30</b><span>小四數學 A</span><span>分數加減</span><span class="pill ok">已完成</span></div>
+                <div class="tr"><b>17:45</b><span>小六數學 B</span><span>百分數</span><span class="pill warn">進行中</span></div>
+                <div class="tr"><b>19:00</b><span>初一數學</span><span>代數式</span><span class="pill info">待上課</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 家長端 -->
+<section id="parent" class="ends-sec">
+  <div class="wrap">
+    <div class="grid">
+      <div class="copy">
+        <div class="tag t-coral"><img src="icons/parent-192.png" alt="">家長端 · 手機優先</div>
+        <h2>家長最想知道的四件事</h2>
+        <p class="desc">
+          今日到了沒有、今日教了甚麼、出席紀錄如何、這個月交了甚麼費用——一次講清楚。
+          帳號由中心派發，不設自行註冊，家長打開就只看到自己子女的資料。
+        </p>
+
+        <ul class="feat">
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg></span>
+            <div><b>多子女一個帳號切換</b><span>兄弟姊妹同讀，頂部一按切換，不用記兩組密碼。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-7-10a7 7 0 1114 0c0 5.4-7 10-7 10z"/><circle cx="12" cy="11" r="2.4"/></svg></span>
+            <div><b>今日到校情況即時可見</b><span>前台完成點名後立即顯示，是否已簽走亦有紀錄。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg></span>
+            <div><b>功課、成績、課堂表同一頁</b><span>「課堂」頁把當日功課、成績紀錄與時間表並列，不必分開找。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M17 7H9.5A3.5 3.5 0 009.5 14H14a3.5 3.5 0 010 7H6"/></svg></span>
+            <div><b>月費狀態與繳款紀錄</b><span>已繳、未繳、金額與日期一清二楚；收據由中心開立後可查。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 11-3.2-6.4"/><path d="M21 4v5h-5"/></svg></span>
+            <div><b>提交請假或查詢，有紀錄</b><span>送出後列在「申請紀錄」，處理到哪一步都看得到，不用再打電話確認。</span></div>
+          </li>
+          <li>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H7l-3 3z"/><path d="M8 9h8"/></svg></span>
+            <div><b>通知有未讀標記</b><span>中心發出的消息依時間排列，未讀數量直接顯示在標題旁。</span></div>
+          </li>
+        </ul>
+
+        <div class="tabs-label">五個頁籤</div>
+        <div class="chips">
+          <span class="hi">今日</span><span>課堂</span><span>出席</span><span>帳單</span><span>申請</span>
+        </div>
+      </div>
+
+      <div class="device">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>5G ▮</span></div>
+            <div class="p-top">
+              <div class="who">星博補習社</div>
+              <div class="nm">陳太，你好</div>
+              <div class="sel"><em class="on">陳小明</em><em>陳小美</em></div>
+            </div>
+            <div class="p-body">
+              <div class="p-card">
+                <h5><span>今日到校情況</span><span class="pill ok">已簽到</span></h5>
+                <div class="kv"><span>到校時間</span><b>16:22</b></div>
+                <div class="kv"><span>放學簽走</span><b>18:05 · 陳太</b></div>
+              </div>
+
+              <div class="p-card">
+                <h5><span>最新通知</span><span class="pill bad">2 則未讀</span></h5>
+                <div class="note-row"><i></i><span>下週一為公眾假期，中心停課一天。</span></div>
+                <div class="note-row"><i></i><span>9 月份月費帳單已發出，請於 10 日前繳交。</span></div>
+              </div>
+
+              <div class="p-card">
+                <h5><span>本月月費</span><span class="pill warn">待繳</span></h5>
+                <div class="kv"><span>應繳金額</span><b class="big-num">MOP 1,280</b></div>
+                <div class="kv"><span>到期日</span><b>9 月 10 日</b></div>
+              </div>
+
+              <div class="p-card" style="margin-bottom:0">
+                <h5><span>今日功課</span><span class="pill info">數學</span></h5>
+                <div class="kv"><span>練習 4.2 · 第 1–8 題</span><b>已核對</b></div>
+              </div>
+            </div>
+            <div class="p-nav">
+              <div class="on"><em>◈</em>今日</div>
+              <div><em>✎</em>課堂</div>
+              <div><em>▤</em>出席</div>
+              <div><em>$</em>帳單</div>
+              <div><em>✉</em>申請</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 能力矩陣 -->
+<section id="matrix" class="tint">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">能力對照</div>
+      <h2>三端各自做到哪一步</h2>
+      <p>同一項功能，在中心端是「管理」、在導師端是「執行」、在家長端是「查看」。分清楚，權限才不會亂。</p>
+    </div>
+
+    <div class="mwrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>功能</th>
+            <th>中心端</th>
+            <th>導師端</th>
+            <th>家長端</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>點名與出席<span class="cap">簽到、簽走、請假、停課留校</span></th>
+            <td>管理</td><td>核對</td><td class="pt">查看</td>
+          </tr>
+          <tr>
+            <th>排課與衝突檢查<span class="cap">課堂排程、課室與導師撞時間</span></th>
+            <td>管理</td><td>查看</td><td class="pt">查看</td>
+          </tr>
+          <tr>
+            <th>功課與成績<span class="cap">當日功課、測驗日期、成績紀錄</span></th>
+            <td>管理</td><td>填寫</td><td class="pt">查看</td>
+          </tr>
+          <tr>
+            <th>月費與收據<span class="cap">帳單、按堂報名、雜費、收據查詢</span></th>
+            <td>管理</td><td class="no">—</td><td class="pt">查看</td>
+          </tr>
+          <tr>
+            <th>請假與查詢<span class="cap">家長提交、導師回覆、主任批核</span></th>
+            <td>批核</td><td>處理</td><td>提交</td>
+          </tr>
+          <tr>
+            <th>員工與薪金<span class="cap">更表、打卡、職級、月度目標</span></th>
+            <td>管理</td><td class="pt">本人</td><td class="no">—</td>
+          </tr>
+          <tr>
+            <th>招生與續報<span class="cap">試堂漏斗、流失分析、滿意度問卷</span></th>
+            <td>管理</td><td class="no">—</td><td class="no">—</td>
+          </tr>
+          <tr>
+            <th>報表與匯出<span class="cap">統計、下載、資料匯入</span></th>
+            <td>管理</td><td class="no">—</td><td class="no">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span>管理＝可新增、修改、刪除</span>
+      <span>填寫／處理＝只限自己負責的班別或個案</span>
+      <span>查看＝只讀，不能改</span>
+    </div>
+  </div>
+</section>
+
+<!-- 亮點 -->
+<section id="hi">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">六個亮點</div>
+      <h2>為甚麼用起來會順</h2>
+      <p>不是功能多，而是每個決定都減少一次重複輸入、一次電話、一次「等等我問下」。</p>
+    </div>
+
+    <div class="hi-grid">
+      <div class="hi">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="14" height="11" rx="1.5"/><rect x="17" y="9" width="5" height="10" rx="1.5"/></svg></div>
+        <h4>一個網址，三種身份</h4>
+        <p>同一份資料、同一本稽核紀錄。三個網址只是入口不同，不存在「邊個版本才是對」的問題。</p>
+      </div>
+      <div class="hi">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></div>
+        <h4>手機可用，可加到主畫面</h4>
+        <p>Android 與 iPhone 都能「加到主畫面」，開啟即全螢幕，圖標各自獨立，看起來就是一個 App。</p>
+      </div>
+      <div class="hi">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/><path d="M12 14.5v2.5"/></svg></div>
+        <h4>權限分兩層</h4>
+        <p>角色決定「可以做甚麼」，職級決定「做到哪個水平」。家長只會拿到自己子女的資料，這一條在資料庫層把關。</p>
+      </div>
+      <div class="hi">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3.5-7.1"/><path d="M21 3v6h-6"/></svg></div>
+        <h4>資料只寫一次</h4>
+        <p>櫃檯寫入、導師補充、家長讀取。任何一端改動，其餘兩端下次開啟就是最新版本，沒有過期副本。</p>
+      </div>
+      <div class="hi">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></div>
+        <h4>全站書面語</h4>
+        <p>由按鈕、提示、錯誤訊息到資料庫回傳的說明，一律書面語。對家長、對老師、對外來檢查都是同一種語氣。</p>
+      </div>
+      <div class="hi">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6V6"/><path d="M5 12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6"/></svg></div>
+        <h4>資料每日自動留底</h4>
+        <p>每日凌晨自動快照並逐項核對，保留三十日。更新前另有備份檢查，備份未通過就不會覆蓋正式資料。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 安全 -->
+<section id="safe" class="tint">
+  <div class="wrap">
+    <div class="shead">
+      <div class="eyebrow">資料與合規</div>
+      <h2>家長的資料，只給該看的人看</h2>
+      <p>補習社會處理兒童姓名、班別、出席與繳費紀錄，這些都屬於個人資料。系統在幾個位置特別設防。</p>
+    </div>
+
+    <div class="safe">
+      <div class="item"><div class="k">01</div><div><b>每個帳號只看自己子女</b><span>家長以帳號密碼登入後，資料庫按帳號過濾；即使改網址參數，也取不到其他學生的紀錄。</span></div></div>
+      <div class="item"><div class="k">02</div><div><b>首次登入必須改密碼</b><span>中心派發的初始密碼只能用一次，登入後即要求設定新密碼；這個檢查由伺服器判定，重新整理頁面也繞不過。</span></div></div>
+      <div class="item"><div class="k">03</div><div><b>登入失效自動回登入頁</b><span>三端一致：憑證過期時直接帶回登入畫面，不會停在「載入失敗」讓使用者以為系統壞了。</span></div></div>
+      <div class="item"><div class="k">04</div><div><b>員工按角色分權</b><span>校長、主任、導師、櫃檯四種角色各有可見範圍；權限在資料庫層判斷，不是只靠畫面隱藏按鈕。</span></div></div>
+      <div class="item"><div class="k">05</div><div><b>更新前先備份</b><span>任何覆蓋正式資料的操作之前，必須先完成備份並通過完整性核對，未通過一律不進行。</span></div></div>
+      <div class="item"><div class="k">06</div><div><b>使用條款與版權</b><span>系統、教材與資料的歸屬與使用範圍寫入使用條款，員工與合作方均有明確界線。</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="cta">
+  <h2>三端已在運作，隨時可以試</h2>
+  <p>員工以中心電郵收取驗證碼登入；家長由中心派發帳號密碼。三個入口在同一個網址之下。</p>
+  <a class="btn" href="https://singbo-tutor.app.workbuddy.host/launch.html?sharecode=EKNZC3NTUX" target="_blank" rel="noopener">開啟系統入口</a>
+  <div class="code">分享碼 <code>EKNZC3NTUX</code></div>
+</div>
+
+<footer>
+  <p>星博補習社 · 三端整合教務系統</p>
+  <p>中心端 · 導師端 · 家長端　|　© 2026 星博補習社</p>
+</footer>
+
+</body>
+</html>
